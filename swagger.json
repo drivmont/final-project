@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "My API",
-    "description": "Project 2 API",
+    "description": "Final Project API",
     "version": "1.0.0"
   },
   "host": "final-project-z24p.onrender.com",
