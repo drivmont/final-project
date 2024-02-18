@@ -1,17 +1,15 @@
 const mongodb = require('../data/database');
 const ObjectId = require('mongodb').ObjectId;
 
-const getAll = (req, res) => {
+const getAll = async (req, res) => {
     //#swagger.tags=['Attack']  
-      const result = mongodb.getDatabase().db().collection('attack').find();
-      result.toArray().then((err, attack) => {
-        if (err) {
-            res.status(400).json({ message: err });
-          }
-          res.setHeader('Content-Type', 'application/json');
-          res.status(200).json(attack);
-      });
-};
+    const result = await mongodb.getDatabase().db().collection('attack').find().toArray();
+    if (result.length === 0){
+          res.status(400).json({ message: "Empty collection" });
+        }
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).json(result);
+    };
 
 const getSingle = (req, res) => {
     //#swagger.tags=['Attack']
@@ -32,14 +30,10 @@ const getSingle = (req, res) => {
 const createAttack = async (req, res) => {
     //#swagger.tags=['Attack']
     const attack = {
-        color: req.body.color,
-        name: req.body.name,
-        region: req.body.region,
-        size: req.body.size,
-        strength: req.body.strength,
         type: req.body.type,
-        weakness: req.body.weakness
-        
+        name: req.body.name,
+        uses: req.body.uses,
+        power: req.body.power,
     };
     const response = await mongodb.getDatabase().db().collection('attack').insertOne(attack);
     if (response.acknowledged > 0) {
@@ -57,13 +51,10 @@ const updateAttack = async (req, res) => {
     }
     const attackId = new ObjectId(req.params.id);
     const attack = {
-        color: req.body.color,
-        name: req.body.name,
-        region: req.body.region,
-        size: req.body.size,
-        strength: req.body.strength,
         type: req.body.type,
-        weakness: req.body.weakness
+        name: req.body.name,
+        uses: req.body.uses,
+        power: req.body.power,
     };
     const response = await mongodb.getDatabase().db().collection('attack').replaceOne({ _id: attackId}, attack);
     if (response.modifiedCount > 0) {
@@ -92,11 +83,25 @@ const deleteAttack = async (req, res) => {
 
 const getAttackPower = async (req, res) => {
     //#swagger.tags=['Attack']
-}
+    if (!ObjectId.isValid(req.params.id)) {
+        res.status(400).json('Must use a valid attack id to find a attack.');
+    }
+    const attackId = new ObjectId(req.params.id);
+    const result = await mongodb.getDatabase().db().collection('attack').find({ _id: attackId}).toArray();
+          res.setHeader('Content-Type', 'application/json');
+          res.status(200).json(result[0]["power"]);
+      };
 
 const getAttackUses = async (req, res) => {
     //#swagger.tags=['Attack']
-}
+    if (!ObjectId.isValid(req.params.id)) {
+        res.status(400).json('Must use a valid attack id to find a attack.');
+    }
+    const attackId = new ObjectId(req.params.id);
+    const result = await mongodb.getDatabase().db().collection('attack').find({ _id: attackId}).toArray();
+          res.setHeader('Content-Type', 'application/json');
+          res.status(200).json(result[0]["uses"]);
+      };
 
 module.exports = {
     getAll,

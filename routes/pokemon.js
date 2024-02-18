@@ -16,7 +16,7 @@ router.put('/:id', isAuthenticated,validation.savePokemon, pokemonController.upd
 
 router.delete('/:id', isAuthenticated,pokemonController.deletePokemon);
 
-router.get('/findByTrainer/:id', pokemonController.getPokemonByTrainer);
+router.get('/findByTrainer/:trainerCode', pokemonController.getPokemonByTrainer);
 
 router.get('/findByDexNum/:dexNum', pokemonController.getDexEntry);
 

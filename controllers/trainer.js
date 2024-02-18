@@ -4,15 +4,14 @@ const ObjectId = require('mongodb').ObjectId;
 
 const getAll = async (req, res) => {
     //#swagger.tags=['Trainer']
-    const result = await mongodb.getDatabase().db().collection('trainer').find();
-    result.toArray().then((err, trainer) => {
-      if (err) {
-          res.status(400).json({ message: err });
-        }
+    const result = await mongodb.getDatabase().db().collection('trainer').find().toArray();
+    if (result.length === 0){
+        res.status(400).json({ message: "Empty collection" });
+      }
         res.setHeader('Content-Type', 'application/json');
-        res.status(200).json(trainer);
-    });
-};
+        res.status(200).json(result);
+    };
+
 
 const getSingle = async (req, res) => {
     //#swagger.tags=['Trainer']
@@ -83,20 +82,10 @@ const deleteTrainer = async (req, res) => {
     }
 };
 
-const trainerLogin = async (req, res) => {
-    //#swagger.tags=['Trainer']
-}
-
-const trainerLogout = async (req, res) => {
-    //#swagger.tags=['Trainer']
-}
-
 module.exports = {
     getAll,
     getSingle,
     createTrainer,
     updateTrainer,
-    deleteTrainer,
-    trainerLogin,
-    trainerLogout
+    deleteTrainer
 }

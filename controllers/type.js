@@ -2,17 +2,15 @@ const mongodb = require('../data/database');
 const ObjectId = require('mongodb').ObjectId;
 
 
-const getAll = (req, res) => {
+const getAll = async (req, res) => {
     //#swagger.tags=['Type']  
-      const result = mongodb.getDatabase().db().collection('type').find();
-      result.toArray().then((err, type) => {
-        if (err) {
-            res.status(400).json({ message: err });
-          }
-          res.setHeader('Content-Type', 'application/json');
-          res.status(200).json(type);
-      });
-};
+    const result = await mongodb.getDatabase().db().collection('type').find().toArray();
+    if (result.length === 0){
+          res.status(400).json({ message: "Empty collection" });
+        }
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).json(result);
+    };
 
 const getSingle = (req, res) => {
     //#swagger.tags=['Type']
@@ -33,14 +31,9 @@ const getSingle = (req, res) => {
 const createType = async (req, res) => {
     //#swagger.tags=['Type']
     const type = {
-        color: req.body.color,
         name: req.body.name,
-        region: req.body.region,
-        size: req.body.size,
-        strength: req.body.strength,
-        type: req.body.type,
-        weakness: req.body.weakness
-        
+        weakness: req.body.weakness,
+        strength: req.body.strength
     };
     const response = await mongodb.getDatabase().db().collection('type').insertOne(type);
     if (response.acknowledged > 0) {
@@ -58,13 +51,10 @@ const updateType = async (req, res) => {
     }
     const typeId = new ObjectId(req.params.id);
     const type = {
-        color: req.body.color,
         name: req.body.name,
-        region: req.body.region,
-        size: req.body.size,
-        strength: req.body.strength,
-        type: req.body.type,
-        weakness: req.body.weakness
+        weakness: req.body.weakness,
+        strength: req.body.strength
+
     };
     const response = await mongodb.getDatabase().db().collection('type').replaceOne({ _id: typeId}, type);
     if (response.modifiedCount > 0) {
@@ -92,15 +82,39 @@ const deleteType = async (req, res) => {
 
 const getTypeByWeakness = async (req, res) => {
     //#swagger.tags=['Type']
-}
+    const typeId = req.params.type;
+    const result = await mongodb.getDatabase().db().collection('type').find({ strength: typeId }).toArray();
+          res.setHeader('Content-Type', 'application/json');
+          res.status(200).json(result);
+      };
 
 const getTypeByStrength = async (req, res) => {
     //#swagger.tags=['Type']
-}
+    const typeId = req.params.type;
+    const result = await mongodb.getDatabase().db().collection('type').find({ weakness: typeId }).toArray();
+          res.setHeader('Content-Type', 'application/json');
+          res.status(200).json(result);
+      };
 
 const getTypeMatch = async (req, res) => {
     //#swagger.tags=['Type']
-}
+    const type1 = req.params.type1;
+    const type2 = req.params.type2;
+    const result1 = await mongodb.getDatabase().db().collection('type').find({ name: type1 }).toArray();
+    const result2 = await mongodb.getDatabase().db().collection('type').find({ name: type2 }).toArray();
+    if (result1[0]["weakness"] === result2[0]["name"]){
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).json(type2);
+    }
+    if (result2[0]["weakness"] === result1[0]["name"]){
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).json(type1);
+    }
+    else {
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).json("tie");
+    }
+      };
 
 module.exports = {
     getAll,

@@ -6,9 +6,9 @@ const savePokemon = (req, res, next) => {
     name: 'required|string',
     region: 'required|string',
     size: 'required|string',
-    strength: 'required|string',
+    trainer: 'required|string',
     type: 'required|string',
-    weakness: 'required|string'
+    dexNum: 'required|string'
   };
   validator(req.body, validationRule, {}, (err, status) => {
     if (!status) {
@@ -44,10 +44,43 @@ const saveTrainer = (req, res, next) => {
   };
 
 const saveType = (req, res, next) => {
+  const validationRule = {
+    name: 'required|string',
+    weakness: 'required|string',
+    strength: 'required|string'
+  };
+  validator(req.body, validationRule, {}, (err, status) => {
+    if (!status) {
+      res.status(412).send({
+        success: false,
+        message: 'Validation failed',
+        data: err
+      });
+    } else {
+      next();
+    }
+  });
 
 }
 
 const saveAttack = (req, res, next) => {
+  const validationRule = {
+    type: 'required|string',
+    name: 'required|string',
+    uses: 'required|string',
+    power: 'required|string'
+  };
+  validator(req.body, validationRule, {}, (err, status) => {
+    if (!status) {
+      res.status(412).send({
+        success: false,
+        message: 'Validation failed',
+        data: err
+      });
+    } else {
+      next();
+    }
+  });
 
 }
 

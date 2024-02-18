@@ -2,17 +2,15 @@ const mongodb = require('../data/database');
 const ObjectId = require('mongodb').ObjectId;
 
 
-const getAll = (req, res) => {
-    //#swagger.tags=['Pokemon']  
-      const result = mongodb.getDatabase().db().collection('pokemon').find();
-      result.toArray().then((err, pokemon) => {
-        if (err) {
-            res.status(400).json({ message: err });
-          }
-          res.setHeader('Content-Type', 'application/json');
-          res.status(200).json(pokemon);
-      });
-};
+const getAll = async (req, res) => {
+    //#swagger.tags=['Pokemon']
+    const result = await mongodb.getDatabase().db().collection('pokemon').find().toArray();
+    if (result.length === 0){
+          res.status(400).json({ message: "Empty collection" });
+        }
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).json(result);
+    };
 
 const getSingle = (req, res) => {
     //#swagger.tags=['Pokemon']
@@ -20,15 +18,13 @@ const getSingle = (req, res) => {
         res.status(400).json('Must use a valid pokemon id to find a pokemon.');
     }
     const pokemonId = new ObjectId(req.params.id);
-    const result = mongodb.getDatabase().db().collection('pokemon').find({ _id: pokemonId });
-    result.toArray().then((err, pokemon) => {
-        if (err) {
-            res.status(400).json({ message: err });
-          }
+    const result = mongodb.getDatabase().db().collection('pokemon').find({ _id: pokemonId }).toArray();
+    if (result.length === 0){
+        res.status(400).json({ message: "Empty collection" });
+      }
           res.setHeader('Content-Type', 'application/json');
-          res.status(200).json(pokemon[0]);
-      });
-};
+          res.status(200).json(result[0]);
+      };
 
 const createPokemon = async (req, res) => {
     //#swagger.tags=['Pokemon']
@@ -37,9 +33,9 @@ const createPokemon = async (req, res) => {
         name: req.body.name,
         region: req.body.region,
         size: req.body.size,
-        strength: req.body.strength,
+        trainer: req.body.trainer,
         type: req.body.type,
-        weakness: req.body.weakness
+        dexNum: req.body.dexNum
         
     };
     const response = await mongodb.getDatabase().db().collection('pokemon').insertOne(pokemon);
@@ -62,9 +58,9 @@ const updatePokemon = async (req, res) => {
         name: req.body.name,
         region: req.body.region,
         size: req.body.size,
-        strength: req.body.strength,
+        trainer: req.body.trainer,
         type: req.body.type,
-        weakness: req.body.weakness
+        dexNum: req.body.dexNum
     };
     const response = await mongodb.getDatabase().db().collection('pokemon').replaceOne({ _id: pokemonId}, pokemon);
     if (response.modifiedCount > 0) {
@@ -92,15 +88,27 @@ const deletePokemon = async (req, res) => {
 
 const getPokemonByTrainer = async (req, res) => {
     //#swagger.tags=['Pokemon']
-}
+    const trainerId = req.params.trainerCode;
+    const result = await mongodb.getDatabase().db().collection('pokemon').find({ trainer: trainerId }).toArray();
+          res.setHeader('Content-Type', 'application/json');
+          res.status(200).json(result);
+      };
 
 const getDexEntry = async (req, res) => {
     //#swagger.tags=['Pokemon']
-}
+    const dex = req.params.dexNum;
+    const result = await mongodb.getDatabase().db().collection('pokemon').find({ dexNum: dex }).toArray();
+          res.setHeader('Content-Type', 'application/json');
+          res.status(200).json(result);
+      };
 
 const getPokemonByType = async (req, res) => {
     //#swagger.tags=['Pokemon']
-}
+    const typeId = req.params.type;
+    const result = await mongodb.getDatabase().db().collection('pokemon').find({ type: typeId }).toArray();
+          res.setHeader('Content-Type', 'application/json');
+          res.status(200).json(result);
+      };
 
 module.exports = {
     getAll,

@@ -16,10 +16,10 @@ router.put('/:id', isAuthenticated,validation.saveType, typeController.updateTyp
 
 router.delete('/:id', isAuthenticated,typeController.deleteType);
 
-router.get('/findByWeakness/:id', typeController.getTypeByWeakness);
+router.get('/findByWeakness/:type', typeController.getTypeByWeakness);
 
-router.get('/findByStrength/:id', typeController.getTypeByStrength);
+router.get('/findByStrength/:type', typeController.getTypeByStrength);
 
-router.get('/findMatch/:type1&:type2', typeController.getTypeMatch);
+router.get('/findMatch/:type1/:type2', typeController.getTypeMatch);
 
 module.exports = router;

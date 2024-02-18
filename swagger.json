@@ -5,10 +5,11 @@
     "description": "Project 2 API",
     "version": "1.0.0"
   },
-  "host": "final-project-z24p.onrender.com",
+  "host": "localhost:3000",
   "basePath": "/",
   "schemes": [
-    "https"
+    "https",
+    "http"
   ],
   "paths": {
     "/api-docs": {
@@ -63,13 +64,13 @@
                 "size": {
                   "example": "any"
                 },
-                "strength": {
+                "trainer": {
                   "example": "any"
                 },
                 "type": {
                   "example": "any"
                 },
-                "weakness": {
+                "dexNum": {
                   "example": "any"
                 }
               }
@@ -148,13 +149,13 @@
                 "size": {
                   "example": "any"
                 },
-                "strength": {
+                "trainer": {
                   "example": "any"
                 },
                 "type": {
                   "example": "any"
                 },
-                "weakness": {
+                "dexNum": {
                   "example": "any"
                 }
               }
@@ -208,23 +209,26 @@
         }
       }
     },
-    "/pokemon/findByTrainer/{id}": {
+    "/pokemon/findByTrainer/{trainerCode}": {
       "get": {
         "tags": [
           "Pokemon"
         ],
         "description": "",
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
-            "name": "id",
+            "name": "trainerCode",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -235,6 +239,9 @@
           "Pokemon"
         ],
         "description": "",
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "dexNum",
@@ -244,8 +251,8 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -256,6 +263,9 @@
           "Pokemon"
         ],
         "description": "",
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "type",
@@ -265,8 +275,8 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -442,9 +452,6 @@
     },
     "/trainer/login": {
       "get": {
-        "tags": [
-          "Trainer"
-        ],
         "description": "",
         "responses": {
           "default": {
@@ -455,9 +462,6 @@
     },
     "/trainer/logout": {
       "get": {
-        "tags": [
-          "Trainer"
-        ],
         "description": "",
         "responses": {
           "default": {
@@ -496,25 +500,13 @@
             "schema": {
               "type": "object",
               "properties": {
-                "color": {
-                  "example": "any"
-                },
                 "name": {
                   "example": "any"
                 },
-                "region": {
-                  "example": "any"
-                },
-                "size": {
+                "weakness": {
                   "example": "any"
                 },
                 "strength": {
-                  "example": "any"
-                },
-                "type": {
-                  "example": "any"
-                },
-                "weakness": {
                   "example": "any"
                 }
               }
@@ -527,6 +519,9 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "412": {
+            "description": "Precondition Failed"
           },
           "500": {
             "description": "Internal Server Error"
@@ -578,25 +573,13 @@
             "schema": {
               "type": "object",
               "properties": {
-                "color": {
-                  "example": "any"
-                },
                 "name": {
                   "example": "any"
                 },
-                "region": {
-                  "example": "any"
-                },
-                "size": {
+                "weakness": {
                   "example": "any"
                 },
                 "strength": {
-                  "example": "any"
-                },
-                "type": {
-                  "example": "any"
-                },
-                "weakness": {
                   "example": "any"
                 }
               }
@@ -612,6 +595,9 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "412": {
+            "description": "Precondition Failed"
           },
           "500": {
             "description": "Internal Server Error"
@@ -647,65 +633,80 @@
         }
       }
     },
-    "/type/findByWeakness/{id}": {
+    "/type/findByWeakness/{type}": {
       "get": {
         "tags": [
           "Type"
         ],
         "description": "",
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
-            "name": "id",
+            "name": "type",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
           }
         }
       }
     },
-    "/type/findByStrength/{id}": {
+    "/type/findByStrength/{type}": {
       "get": {
         "tags": [
           "Type"
         ],
         "description": "",
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
-            "name": "id",
+            "name": "type",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
           }
         }
       }
     },
-    "/type/findMatch/{type1&:type2}": {
+    "/type/findMatch/{type1}/{type2}": {
       "get": {
         "tags": [
           "Type"
         ],
         "description": "",
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
-            "name": "type1&:type2",
+            "name": "type1",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type2",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -740,25 +741,16 @@
             "schema": {
               "type": "object",
               "properties": {
-                "color": {
+                "type": {
                   "example": "any"
                 },
                 "name": {
                   "example": "any"
                 },
-                "region": {
+                "uses": {
                   "example": "any"
                 },
-                "size": {
-                  "example": "any"
-                },
-                "strength": {
-                  "example": "any"
-                },
-                "type": {
-                  "example": "any"
-                },
-                "weakness": {
+                "power": {
                   "example": "any"
                 }
               }
@@ -771,6 +763,9 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "412": {
+            "description": "Precondition Failed"
           },
           "500": {
             "description": "Internal Server Error"
@@ -822,25 +817,16 @@
             "schema": {
               "type": "object",
               "properties": {
-                "color": {
+                "type": {
                   "example": "any"
                 },
                 "name": {
                   "example": "any"
                 },
-                "region": {
+                "uses": {
                   "example": "any"
                 },
-                "size": {
-                  "example": "any"
-                },
-                "strength": {
-                  "example": "any"
-                },
-                "type": {
-                  "example": "any"
-                },
-                "weakness": {
+                "power": {
                   "example": "any"
                 }
               }
@@ -856,6 +842,9 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "412": {
+            "description": "Precondition Failed"
           },
           "500": {
             "description": "Internal Server Error"
@@ -897,6 +886,9 @@
           "Attack"
         ],
         "description": "",
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "id",
@@ -906,8 +898,11 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           }
         }
       }
@@ -918,6 +913,9 @@
           "Attack"
         ],
         "description": "",
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "id",
@@ -927,8 +925,11 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           }
         }
       }
